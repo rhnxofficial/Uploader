@@ -13,33 +13,23 @@ Dengan repo ini, kamu bisa memanfaatkan GitHub sebagai media penyimpanan file, b
 
 ---
 
-## 🛠️ Instalasi
----
-
 🔑 Cara Generate GitHub Personal Access Token (Classic)
 
 Ikuti langkah-langkah berikut untuk membuat token:
 
 1. Login ke akun GitHub kamu
 
-
 2. Klik foto profil kanan atas → Settings
-
 
 3. Scroll ke bawah → klik Developer settings
 
-
 4. Pilih menu Personal access tokens → Tokens (classic)
-
 
 5. Klik Generate new token (classic)
 
-
 6. Isi Note (misalnya: Uploader Access)
 
-
 7. Pilih Expiration (misalnya: 30 days, 90 days, atau No expiration)
-
 
 8. Centang scope berikut:
 
@@ -47,21 +37,15 @@ Ikuti langkah-langkah berikut untuk membuat token:
 
 (opsional) workflow jika ingin digunakan untuk GitHub Actions
 
-
-
 9. Klik Generate token
-
-
-10. Salin token yang muncul → gunakan di perintah git clone
-
-
+10. 
+11. Salin token yang muncul → gunakan di perintah git clone
 
 ⚠️ Catatan:
 
 Token hanya ditampilkan sekali, jadi simpan dengan aman.
 
 Jangan pernah commit atau share token di repo publik.
-
 
 ---
 
@@ -72,6 +56,5 @@ Gunakan GitHub Token dengan permission yang sesuai
 Jangan membagikan token secara publik
 
 Repo ini bisa dijadikan media penyimpanan file untuk berbagai kebutuhan
-
 
 ---
