@@ -95,21 +95,11 @@ async function uploadToGithub(media) {
 ## 🌐 Sosial Media
 Terhubung dengan saya melalui:
 
-[![Instagram](https://img.shields.io/badge/Instagram-%23E4405F.svg?&style=for-the-badge&logo=instagram&logoColor=white)](https://instagram.com/username)
+[![Instagram](https://img.shields.io/badge/Instagram-%23E4405F.svg?&style=for-the-badge&logo=instagram&logoColor=white)](https://instagram.com/rhnxofficial)
 [![Twitter](https://img.shields.io/badge/Twitter-%231DA1F2.svg?&style=for-the-badge&logo=twitter&logoColor=white)](https://twitter.com/username)
-[![WhatsApp](https://img.shields.io/badge/WhatsApp-%2325D366.svg?&style=for-the-badge&logo=whatsapp&logoColor=white)](https://wa.me/628xxxxxxxxxx)
+[![WhatsApp](https://img.shields.io/badge/WhatsApp-%2325D366.svg?&style=for-the-badge&logo=whatsapp&logoColor=white)](https://wa.me/6281316643491)
 [![Facebook](https://img.shields.io/badge/Facebook-%231877F2.svg?&style=for-the-badge&logo=facebook&logoColor=white)](https://facebook.com/username)
-[![GitHub](https://img.shields.io/badge/GitHub-%23181717.svg?&style=for-the-badge&logo=github&logoColor=white)](https://github.com/username)
-
----
-
-## 📊 GitHub Stats
-
-![Stars](https://img.shields.io/github/stars/username/Uploader?style=for-the-badge)
-![Forks](https://img.shields.io/github/forks/username/Uploader?style=for-the-badge)
-![Issues](https://img.shields.io/github/issues/username/Uploader?style=for-the-badge)
-![Contributors](https://img.shields.io/github/contributors/username/Uploader?style=for-the-badge)
-![Repo Size](https://img.shields.io/github/repo-size/username/Uploader?style=for-the-badge)
+[![GitHub](https://img.shields.io/badge/GitHub-%23181717.svg?&style=for-the-badge&logo=github&logoColor=white)](https://github.com/rhnxofficial)
 
 ---
 
