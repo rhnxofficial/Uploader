@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="id" class="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>RHNX CDN Uploader</title>
+
+  <!-- FONT -->
+  <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap" rel="stylesheet">
+
+  <!-- TAILWIND -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          fontFamily: {
+            mono: ['"Share Tech Mono"', 'monospace']
+          },
+          backgroundImage: {
+            'gradient-primary': 'linear-gradient(to bottom, #3db8f5, #1473e6)'
+          }
+        }
+      }
+    }
+  </script>
+</head>
+
+<body class="bg-slate-900 min-h-screen flex items-center justify-center font-mono text-white px-3">
+
+<div class="bg-slate-800/80 backdrop-blur p-5 sm:p-6 rounded-2xl w-full max-w-md border border-slate-700 shadow-xl">
+
+  <!-- HEADER -->
+  <h1 class="text-xl sm:text-2xl font-bold text-center mb-1">
+    RHNX CDN Uploader
+  </h1>
+  <p class="text-center text-slate-400 text-xs sm:text-sm mb-5">
+    Upload file → get CDN URL
+  </p>
+
+  <!-- FILE INPUT -->
+  <label class="block mb-4">
+    <span class="text-xs text-slate-300">Pilih File</span>
+    <input type="file" id="file"
+      class="mt-1 w-full text-xs sm:text-sm
+      file:mr-3 file:py-2 file:px-3
+      file:rounded-lg file:border-0
+      file:bg-gradient-primary file:text-white
+      hover:file:opacity-90 cursor-pointer" />
+  </label>
+
+  <!-- EXPIRE -->
+  <label class="block mb-4">
+    <span class="text-xs text-slate-300">Waktu Penyimpanan</span>
+    <select id="expire"
+      class="mt-1 w-full bg-slate-900 border border-slate-700 rounded-lg px-3 py-2 text-xs sm:text-sm">
+      <option value="30">⏱️ 30 Detik (Auto Hapus)</option>
+      <option value="permanent">♾️ Selamanya</option>
+    </select>
+  </label>
+
+  <!-- UPLOAD BUTTON -->
+  <button id="uploadBtn" onclick="upload()"
+    class="w-full py-2 rounded-xl bg-gradient-primary font-bold tracking-wide
+    hover:opacity-90 transition flex items-center justify-center gap-2">
+
+    <svg id="spinner" class="hidden w-4 h-4 animate-spin" viewBox="0 0 24 24">
+      <circle cx="12" cy="12" r="10" stroke="white" stroke-width="4" fill="none" opacity="0.25"/>
+      <path d="M22 12a10 10 0 0 1-10 10" stroke="white" stroke-width="4" fill="none"/>
+    </svg>
+
+    <span id="btnText">UPLOAD</span>
+  </button>
+
+  <!-- RESULT -->
+  <div id="resultBox"
+    class="hidden mt-4 bg-slate-900 border border-slate-700 rounded-xl p-3 text-xs relative">
+
+    <!-- CLOSE -->
+    <button onclick="resetUI()"
+      class="absolute top-2 right-2 text-slate-400 hover:text-white">
+      ✕
+    </button>
+
+    <div class="mb-2">
+      <span class="text-slate-400">URL</span>
+      <div class="flex gap-2 mt-1">
+        <input id="resultUrl" readonly
+          class="flex-1 bg-transparent break-all focus:outline-none text-xs"/>
+        <button onclick="copyUrl()"
+          class="px-3 rounded-lg bg-slate-700 hover:bg-slate-600">
+          COPY
+        </button>
+      </div>
+    </div>
+
+    <div class="grid grid-cols-2 gap-2 text-slate-300">
+      <div>
+        <span class="text-slate-500">File</span><br>
+        <span id="infoName">-</span>
+      </div>
+      <div>
+        <span class="text-slate-500">Size</span><br>
+        <span id="infoSize">-</span>
+      </div>
+      <div>
+        <span class="text-slate-500">Type</span><br>
+        <span id="infoType">-</span>
+      </div>
+      <div>
+        <span class="text-slate-500">Expire</span><br>
+        <span id="infoExpire">-</span>
+      </div>
+    </div>
+
+    <span id="timer" class="block mt-2 text-red-400 hidden"></span>
+  </div>
+</div>
+
+<script>
+let countdownInterval;
+
+/* =======================
+   UPLOAD
+======================= */
+async function upload() {
+  resetUI();
+
+  const file = document.getElementById("file").files[0];
+  const expire = document.getElementById("expire").value;
+
+  if (!file) return alert("Pilih file dulu");
+
+  setLoading(true);
+
+  const form = new FormData();
+  form.append("file", file);
+  form.append("expire", expire);
+
+  try {
+    const res = await fetch("/upload", { method: "POST", body: form });
+    const json = await res.json();
+
+    if (!json.url) throw new Error(json.error || "Upload gagal");
+
+    document.getElementById("resultBox").classList.remove("hidden");
+
+    document.getElementById("resultUrl").value = json.url;
+    document.getElementById("infoName").textContent = json.filename;
+    document.getElementById("infoSize").textContent =
+      (json.size / 1024).toFixed(2) + " KB";
+    document.getElementById("infoType").textContent = json.mime;
+    document.getElementById("infoExpire").textContent =
+      json.expire === 30 ? "30 Detik" : "Selamanya";
+
+    if (json.expire === 30 && json.expires_at) {
+      startTimer(json.expires_at);
+    }
+
+  } catch (err) {
+    alert(err.message);
+  } finally {
+    setLoading(false);
+  }
+}
+
+/* =======================
+   LOADING
+======================= */
+function setLoading(state) {
+  const btn = document.getElementById("uploadBtn");
+  document.getElementById("spinner").classList.toggle("hidden", !state);
+  document.getElementById("btnText").textContent = state ? "UPLOADING..." : "UPLOAD";
+  btn.disabled = state;
+  btn.classList.toggle("opacity-60", state);
+}
+
+/* =======================
+   TIMER
+======================= */
+function startTimer(expiresAt) {
+  const timerEl = document.getElementById("timer");
+  timerEl.classList.remove("hidden");
+
+  clearInterval(countdownInterval);
+
+  countdownInterval = setInterval(() => {
+    const s = Math.max(0, Math.floor((expiresAt - Date.now()) / 1000));
+
+    timerEl.textContent =
+      s > 0
+        ? `⏳ Auto delete dalam ${s} detik`
+        : "❌ File sudah dihapus";
+
+    if (s <= 0) {
+      clearInterval(countdownInterval);
+      setTimeout(resetUI, 2000);
+    }
+  }, 1000);
+}
+
+/* =======================
+   RESET
+======================= */
+function resetUI() {
+  clearInterval(countdownInterval);
+  document.getElementById("resultBox").classList.add("hidden");
+  document.getElementById("timer").classList.add("hidden");
+}
+
+/* =======================
+   COPY
+======================= */
+function copyUrl() {
+  const input = document.getElementById("resultUrl");
+  input.select();
+  document.execCommand("copy");
+}
+</script>
+
+</body>
+</html>
